@@ -18,18 +18,18 @@ static const float AUX_ALIMENTACAO = 1784.42;
 
 // Tabela IR
 static const float TABELA_IR[3][5] = {
-    {2259.20, 2826.65, 3751.05, 4664.68, 1000000.00},
+    {2428.80, 2826.65, 3751.05, 4664.68, 1000000.00},
     {0.0, 0.075, 0.15, 0.225, 0.275}, 
     {0.0, 169.44, 381.44, 662.77, 896.00}
 };
 
 // Tabela RGPS
 static const float TABELA_RGPS[2][4] = {
-    {1412.00, 2666.68, 4000.03, 7786.02},
+    {1518.00, 2793.88, 4190.83, 8157.41},
     {0.075, 0.09, 0.12, 0.14}
 };
 
-static const float TETO_RGPS = 7786.02;
+static const float TETO_RGPS = 8157.41;
 
 // Tabela RPPS
 static const float TABELA_RPPS[2][8] = {

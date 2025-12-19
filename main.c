@@ -14,6 +14,7 @@ typedef struct {
     float ad_especializacao;
     float ad_ferias;
     float funcao_comissionada;
+    float sessao_noturna;
     
     // Descontos
     float cont_funpresp;
@@ -179,6 +180,14 @@ void obter_dados_entrada(Servidor *s) {
     } else {
         s->pro_saude = 0.0;
     }
+
+    // 7. Sessões Noturnas
+    if (ler_confirmacao("Sessões Noturnas?") == 'S') {
+        int qnt_sessoes = ler_inteiro("Quantas sessões (2h): ", 1, 30);
+        s->sessao_noturna = qnt_sessoes*485.75 ;
+    } else {
+        s->sessao_noturna = 0.0;
+    }
 }
 
 /* --- Lógica de Negócio: Cálculos --- */
@@ -257,7 +266,7 @@ void calcular_rendimentos(Servidor *s) {
         s->ad_ferias = soma_base / 3.0; 
     }
 
-    s->rem_bruta = soma_base + s->ad_ferias;
+    s->rem_bruta = soma_base + s->ad_ferias + s->sessao_noturna;
 }
 
 void calcular_descontos(Servidor *s) {
@@ -275,7 +284,7 @@ void calcular_descontos(Servidor *s) {
     } 
     else if (tipo_prev == 2) { // RGPS + FUNPRESP
         // Funpresp incide sobre o que excede o teto
-        float base_funpresp = s->rem_bruta - AUX_ALIMENTACAO - TETO_RGPS;
+        float base_funpresp = s->rem_bruta - AUX_ALIMENTACAO - TETO_RGPS - s->sessao_noturna;
         if (base_funpresp > 0) {
             s->cont_funpresp = base_funpresp * aliquota_funp;
         }
@@ -327,6 +336,7 @@ void gerar_relatorio(Servidor *s) {
     printf("(+) Auxílio Alimentação ................. R$ %10.2f\n", AUX_ALIMENTACAO);
     if(s->ad_ferias > 0) printf("(+) Adicional de Férias ................. R$ %10.2f\n", s->ad_ferias);
     if(s->funcao_comissionada > 0) printf("(+) Função Comissionada ................. R$ %10.2f\n", s->funcao_comissionada);
+    if(s->sessao_noturna > 0) printf("(+) Sessões Noturnas .................... R$ %10.2f\n", s->sessao_noturna);
     printf("------------------------------------------------------\n");
     printf("(=) REMUNERAÇÃO BRUTA ................... R$ %10.2f\n", s->rem_bruta);
     printf("------------------------------------------------------\n");
