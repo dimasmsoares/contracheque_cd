@@ -1,0 +1,17 @@
+Cargo: Analista Legislativo | Classe: Especial | Padrão: 10
+
+(+) Vencimento básico ................... R$    9274.73
+(+) Gratificação de Representação ....... R$   16202.70
+(+) Adicional de Especialização ......... R$    2782.42
+(+) Grat. Atividade Legislativa ......... R$   12057.15
+(+) VPI ................................. R$      59.87
+(+) Auxílio Alimentação ................. R$    1784.42
+(+) Adicional de Férias ................. R$       0.00
+(+) Função Comissionada ................. R$       0.00
+(=) REMUNERAÇÃO BRUTA ................... R$   42161.29
+(-) Contribuição FUNPRESP ............... R$    2444.31
+(-) Contribuição RGPS ................... R$     908.86
+(-) Contribuição RPPS ................... R$       0.00
+(-) Pró-Saúde ........................... R$     564.40
+(-) Imposto de Renda .................... R$    9285.51
+(=) REMUNERAÇÃO LÍQUIDA ................. R$   28958.20
