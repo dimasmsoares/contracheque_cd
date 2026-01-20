@@ -6,12 +6,12 @@ Cargo: Analista Legislativo | Classe: A | Padrão: 2
 (+) Grat. Atividade Legislativa ......... R$    7853.68
 (+) VPI ................................. R$      59.87
 (+) Auxílio Alimentação ................. R$    1784.42
-(+) Adicional de Férias ................. R$       0.00
+(+) Adicional de Férias ................. R$   10794.49
 (+) Função Comissionada ................. R$       0.00
-(=) REMUNERAÇÃO BRUTA ................... R$   34653.64
-(-) Contribuição FUNPRESP ............... R$    1816.95
-(-) Contribuição RGPS ................... R$     951.63
+(=) REMUNERAÇÃO BRUTA ................... R$   45933.89
+(-) Contribuição FUNPRESP ............... R$    1793.09
+(-) Contribuição RGPS ................... R$     988.09
 (-) Contribuição RPPS ................... R$       0.00
 (-) Pró-Saúde ........................... R$     431.60
-(-) Imposto de Renda .................... R$    7368.95
-(=) REMUNERAÇÃO LÍQUIDA ................. R$   24084.50
+(-) Imposto de Renda .................... R$   10467.56
+(=) REMUNERAÇÃO LÍQUIDA ................. R$   32253.55

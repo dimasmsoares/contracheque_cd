@@ -263,7 +263,7 @@ void calcular_rendimentos(Servidor *s) {
         // Normalmente sim (exceto auxílios indenizatórios como Alimentação).
         // Mantendo a lógica do seu código original (rem_bruta/3), mas ajustando para não ser circular
         // Vamos assumir que incide sobre tudo (simplificação do seu código original)
-        s->ad_ferias = soma_base / 3.0; 
+        s->ad_ferias = (soma_base - AUX_ALIMENTACAO) / 3.0; 
     }
 
     s->rem_bruta = soma_base + s->ad_ferias + s->sessao_noturna;
@@ -284,7 +284,7 @@ void calcular_descontos(Servidor *s) {
     } 
     else if (tipo_prev == 2) { // RGPS + FUNPRESP
         // Funpresp incide sobre o que excede o teto
-        float base_funpresp = s->rem_bruta - AUX_ALIMENTACAO - TETO_RGPS - s->sessao_noturna;
+        float base_funpresp = s->rem_bruta - AUX_ALIMENTACAO - TETO_RGPS - s->sessao_noturna - s->ad_ferias;
         if (base_funpresp > 0) {
             s->cont_funpresp = base_funpresp * aliquota_funp;
         }
