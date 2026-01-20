@@ -13,6 +13,7 @@ typedef struct {
     // Adicionais
     float ad_especializacao;
     float ad_ferias;
+    float aux_pre_escolar;
     float funcao_comissionada;
     float sessao_noturna;
     
