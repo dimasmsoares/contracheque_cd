@@ -20,6 +20,12 @@ static const float VPI = 59.87;
 static const float VLR_AUXILIO_ALIMENTAÇAO = 1784.42;
 static const float VLR_SESSAO_NOTURNA = 485.75;
 
+// Tabela RPPS
+static const float TABELA_RPPS[2][8] = {
+    {1621.00, 2902.84, 4354.27, 8475.55, 14514.30, 29028.57, 56605.73, 100000.00}, 
+    {0.075, 0.09, 0.12, 0.14, 0.145, 0.165, 0.19, 0.22}
+};
+
 typedef struct {
     int cargo_efetivo;
     int padrao_carreira;
@@ -58,10 +64,18 @@ typedef struct {
     float base_ad_ferias;
     float ad_ferias;
 
+    float base_contribuicao_rpps;
     float contribuicao_rpps;
+
+    float base_contribuicao_rgps;
     float contribuicao_rgps;
+
+    float base_contribuicao_funpresp;
     float contribuicao_funpresp;
+    
+    float base_imposto_renda;
     float imposto_de_renda;
+    
 } Contracheque;
 
 /*OPÇÕES PARA INFOS SERVIDOR*/
@@ -138,6 +152,7 @@ int tecla_pressionada();
 int menu(const char *titulo, const char *opcoes[], int n_opçoes, const char *descricao);
 void printInfoServidor(InfoServidor info);
 Contracheque *calcular_contracheque(InfoServidor info, Contracheque *cc);
+float calcular_rpps(float base);
 
 int main(int argc, char *argv[]){
 
@@ -397,6 +412,11 @@ Contracheque *calcular_contracheque(InfoServidor info, Contracheque *cc){
                             cc->sessao_noturna      +
                             cc->ad_ferias           +
                             cc->ad_especializacao;
+
+    if(info.regime_previdenciario == 0){    //RPPS
+        cc->base_contribuicao_rpps = cc->remuneracao_bruta;
+        cc->contribuicao_rpps = calcular_rpps(cc->base_contribuicao_rpps);
+    }
     
 
     printf("(+) Vencimento básico ................... R$ %10.2f\n", cc->vencimento_basico);
@@ -408,11 +428,27 @@ Contracheque *calcular_contracheque(InfoServidor info, Contracheque *cc){
     printf("(+) Auxílio alimentação ................. R$ %10.2f\n", cc->aux_alimentacao);
     printf("(+) Auxílio especialização .............. R$ %10.2f\n", cc->ad_especializacao);
     printf("(=) REMUNERAÇÃO BRUTA ................... R$ %10.2f\n", cc->remuneracao_bruta);
-
-
-
+    printf("(-) CONTRIBUIÇÃO RPPS ................... R$ %10.2f\n", cc->contribuicao_rpps);
 
     return NULL;
+}
+
+// Função auxiliar para cálculo progressivo do RPPS
+float calcular_rpps(float base) {
+    float valor = 0.0;
+    for (int i = 0; i < 8; i++) {
+        float limite_inferior = (i == 0) ? 0 : TABELA_RPPS[0][i-1];
+        float limite_superior = TABELA_RPPS[0][i];
+        float aliquota = TABELA_RPPS[1][i];
+
+        if (base > limite_superior) {
+            valor += (limite_superior - limite_inferior) * aliquota;
+        } else {
+            valor += (base - limite_inferior) * aliquota;
+            break;
+        }
+    }
+    return valor;
 }
 
 
