@@ -9,12 +9,28 @@ static const float VENCIMENTO_BASICO[4][10] = { {5739.22, 6041.29, 6293.01, 6555
                                                 {3198.89, 3496.07, 3820.83, 4175.77, 4639.75, 5070.76, 5541.81, 6056.62, 6729.59, 7354.75}, // Técnico
                                                 {974.32, 1094.75, 1230.05, 1382.09, 1570.58, 1764.69, 1982.77, 2227.83, 2531.64, 2844.53}}; // Auxiliar
 
+static const float VENCIMENTO_BASICO_2026[4][10] = { {14008.22, 14498.51, 15505.96, 15531.16, 16074.75, 16637.37, 17219.68, 17822.37, 18446.15, 19091.77}, // Consultor
+                                                {14008.22, 14498.51, 15505.96, 15531.16, 16074.75, 16637.37, 17219.68, 17822.37, 18446.15, 19091.77}, // Analista 
+                                                {8825.18, 9279.07, 9753.87, 10405.88, 11091.58, 11812.53, 12570.37, 13366.78, 14388.00, 15464.33}, // Técnico
+                                                {974.32, 1094.75, 1230.05, 1382.09, 1570.58, 1764.69, 1982.77, 2227.83, 2531.64, 2844.53}}; // Auxiliar
+
+
 static const float GRAT_ATV_LEG[4][10] =    {{7460.99, 7853.68, 8180.91, 8521.80, 9575.05, 9974.02, 10389.57, 10822.49, 11574.90, 12057.15},   // Consultor 
                                             {7460.99, 7853.68, 8180.91, 8521.80, 9575.05, 9974.02, 10389.57, 10822.49, 11574.90, 12057.15},    // Analista
                                             {4158.56, 4544.89, 4967.08, 5428.50, 6031.68, 6591.99, 7204.35, 7873.61, 8748.47, 9561.18},        // Técnico
                                             {1266.62, 1423.18, 1599.07, 1796.72, 2041.75, 2294.10, 2577.60, 2896.18, 3291.13, 3697.89}};       // Auxiliar
 
+static const float GRAT_ATV_LEG_2026[4][10] =    {{7460.99, 7853.68, 8180.91, 8521.80, 9575.05, 9974.02, 10389.57, 10822.49, 11574.90, 12057.15},   // Consultor 
+                                            {7460.99, 7853.68, 8180.91, 8521.80, 9575.05, 9974.02, 10389.57, 10822.49, 11574.90, 12057.15},    // Analista
+                                            {4158.56, 4544.89, 4967.08, 5428.50, 6031.68, 6591.99, 7204.35, 7873.61, 8748.47, 9561.18},        // Técnico
+                                            {1266.62, 1423.18, 1599.07, 1796.72, 2041.75, 2294.10, 2577.60, 2896.18, 3291.13, 3697.89}};       // Auxiliar
+
+
 static const float GRAT_REPRESENTACAO[4] = {16202.70, 16202.70, 12199.66, 12199.66}; // {Consultor, Analista, Técnico, Auxiliar}
+
+static const float GRAT_DESEMPENHO[4] = {19091.77, 19091.77, 15464.33, 12199.66};
+
+static const float aliquota_GDAE = 0.4;
 
 static const float VPI = 59.87;
 static const float VLR_AUXILIO_ALIMENTAÇAO = 1784.42;
@@ -152,12 +168,14 @@ int tecla_pressionada();
 int menu(const char *titulo, const char *opcoes[], int n_opçoes, const char *descricao);
 void printInfoServidor(InfoServidor info);
 Contracheque *calcular_contracheque(InfoServidor info, Contracheque *cc);
+Contracheque *calcular_contracheque_2026(InfoServidor info, Contracheque *cc);
 float calcular_rpps(float base);
 
 int main(int argc, char *argv[]){
 
     InfoServidor info_servidor = {0};
     Contracheque contracheque = {0};
+    Contracheque contracheque_2026 = {0};
 
     char aux[10] = {0};
     
@@ -238,6 +256,7 @@ int main(int argc, char *argv[]){
     //printInfoServidor(info_servidor);
 
     calcular_contracheque(info_servidor, &contracheque);
+    calcular_contracheque_2026(info_servidor, &contracheque_2026);
     
     return 0;
 }
@@ -451,5 +470,83 @@ float calcular_rpps(float base) {
     return valor;
 }
 
+Contracheque *calcular_contracheque_2026(InfoServidor info, Contracheque *cc){
+    cc->vencimento_basico = VENCIMENTO_BASICO_2026[info.cargo_efetivo][info.padrao_carreira];
+    cc->grat_atv_leg = 0.74 * cc->vencimento_basico;
+    cc->grat_representacao = aliquota_GDAE * GRAT_DESEMPENHO[info.cargo_efetivo];
+    cc->vpi = VPI;
+    cc->aux_alimentacao = VLR_AUXILIO_ALIMENTAÇAO;
+
+    cc->base_ad_especializacao = VENCIMENTO_BASICO_2026[info.cargo_efetivo][9];
+    if(info.ad_especializacao_graduacao == 1){                  // 1ª graduação
+        cc->aliquota_ad_especializacao += 15;
+    }
+    else if(info.ad_especializacao_graduacao == 2){             // 2ª graduação
+        cc->aliquota_ad_especializacao += 21;
+    }
+
+    if(info.ad_especializacao_especializacao == 1){             // 1ª especialização lato sensu
+        cc->aliquota_ad_especializacao += 6;
+    }
+    else if(info.ad_especializacao_especializacao == 2){        // 1ª especialização lato sensu
+        cc->aliquota_ad_especializacao += 9;
+    }
+
+    if(info.ad_especializacao_doutorado_mestrado == 1){    // Apenas mestrado
+        cc->aliquota_ad_especializacao += 8;
+    }
+    else if(info.ad_especializacao_doutorado_mestrado == 2){    // Apenas doutorado
+        cc->aliquota_ad_especializacao += 10;
+    }
+    else if(info.ad_especializacao_doutorado_mestrado == 3){    // Mestrado e doutorado
+        cc->aliquota_ad_especializacao += 18;
+    }
+
+    if(cc->aliquota_ad_especializacao > 30){
+        cc->aliquota_ad_especializacao = 30;
+    }
+    cc->ad_especializacao = cc->base_ad_especializacao * cc->aliquota_ad_especializacao /100;
+
+    if(info.ad_ferias == 1){
+        cc->base_ad_ferias = cc->vencimento_basico  + 
+                            cc->grat_atv_leg        + 
+                            cc->grat_representacao  + 
+                            cc->vpi                 +
+                            cc->ad_especializacao;
+        cc->ad_ferias = cc->base_ad_ferias/3;
+    }
+    
+    if(info.ad_sessao_noturna >0){
+        cc->sessao_noturna = VLR_SESSAO_NOTURNA * info.ad_sessao_noturna;
+    }
+    cc->remuneracao_bruta = cc->vencimento_basico   + 
+                            cc->grat_atv_leg        + 
+                            cc->grat_representacao  + 
+                            cc->vpi                 + 
+                            cc->aux_alimentacao     +
+                            cc->sessao_noturna      +
+                            cc->ad_ferias           +
+                            cc->ad_especializacao;
+
+    if(info.regime_previdenciario == 0){    //RPPS
+        cc->base_contribuicao_rpps = cc->remuneracao_bruta;
+        cc->contribuicao_rpps = calcular_rpps(cc->base_contribuicao_rpps);
+    }
+    
+
+    printf("\nCONTRACHEQUE 2026\n");
+    printf("(+) Vencimento básico ................... R$ %10.2f\n", cc->vencimento_basico);
+    printf("(+) Gratificação de Desempenho .......... R$ %10.2f\n", cc->grat_representacao);
+    printf("(+) Grat. Atividade Legislativa ......... R$ %10.2f\n", cc->grat_atv_leg);
+    printf("(+) VPI ................................. R$ %10.2f\n", cc->vpi);
+    printf("(+) Sessões Noturnas .................... R$ %10.2f\n", cc->sessao_noturna);
+    printf("(+) Adicional de férias ................. R$ %10.2f\n", cc->ad_ferias);
+    printf("(+) Auxílio alimentação ................. R$ %10.2f\n", cc->aux_alimentacao);
+    printf("(+) Auxílio especialização .............. R$ %10.2f\n", cc->ad_especializacao);
+    printf("(=) REMUNERAÇÃO BRUTA ................... R$ %10.2f\n", cc->remuneracao_bruta);
+    printf("(-) CONTRIBUIÇÃO RPPS ................... R$ %10.2f\n", cc->contribuicao_rpps);
+
+    return NULL;
+}
 
 
