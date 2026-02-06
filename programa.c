@@ -12,6 +12,13 @@ typedef struct {
     char nome[80];
     char cargo[80];
     char funcao[120];
+    char nivel_carreira[15];
+    char doutorado[10];
+    char mestrado[10];
+    char graduacao_1[10];
+    char graduacao_2[10];
+    char especializacao_1[10];
+    char especializacao_2[10];
 
 } InfosServidor;
 
@@ -22,6 +29,12 @@ int menu(const char *titulo, const char *opcoes[], int n_opçoes, const char *de
 int tecla_pressionada();
 int tecla_pressionada_com_echo();
 char *ler_arquivo(const char *nome);
+void simular_contracheque(InfosServidor *info_servidor);
+
+
+/* OPÇÕES */
+char *opcoes_nivel[10] = {"A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8" , "Especial 9", "Especial 10"};
+
 
 int main(int argc, char *argv[]){
     InfosServidor info_servidor = {0};  // Inicializa a struct info_servidor
@@ -47,7 +60,16 @@ int main(int argc, char *argv[]){
 
     int opcao = menu(titulo, opcoes, n_opcoes, descricao);
 
-    printf("%d\n", opcao);
+    switch(opcao){
+        case 0:
+            simular_contracheque(&info_servidor);
+            break;
+        case 1:
+            printf("%s\n", opcoes[opcao]);
+            break;
+        default:
+            printf("%s\n", opcoes[opcao]);
+    }
     return 0;
 
 }
@@ -280,3 +302,63 @@ char *obter_ponto(){
     
     return ponto;
 }
+
+void simular_contracheque(InfosServidor *info_servidor){
+    int selecionado = 0;
+    int modo_edicao = 0;
+    char *campos[][2] = {{"Nome", info_servidor->nome}, 
+                        {"Cargo", info_servidor->cargo}, 
+                        {"Nível na carreira", info_servidor->nivel_carreira}, 
+                        {"Função comissionada", "---"}, 
+                        {"Substituição de FC", "---"}, 
+                        {"Doutorado", "---"},
+                        {"Mestrado", "---"},
+                        {"1ª Graduação", "---"},
+                        {"2ª Graduação", "---"}, 
+                        {"1ª Especialização", "---"}, 
+                        {"2ª Especialização", "---"}};
+    int n_campos = 11;
+
+    while(1){
+        system("clear");
+        printf("########## SIMULAR CONTRACHEQUE ##########\n");
+        printf("Verifique as informações abaixo.\nPara editar, selecione o campo e tecle ENTER.\nUse as setas ↑ ↓\n");
+
+        for(int i = 0; i < n_campos; i++){
+            if (selecionado == i) printf(" ✏️  \033[31m%s:\033[0m %s\n", campos[i][0], campos[i][1]);
+            else printf("    %s: %s\n", campos[i][0], campos[i][1]);
+        }
+
+        int ch = tecla_pressionada();
+
+        if(ch == 27){   // Escape (ESC)
+            ch = tecla_pressionada();
+            if(ch == 91){
+                ch = tecla_pressionada();
+                if(ch == 65){   // Seta para cima
+                    if(selecionado > 0){
+                        selecionado --;
+                    }
+                    else{
+                        selecionado = n_campos - 1;
+                    }
+                } // if(ch == 65)
+                else if(ch == 66){  // Seta para baixo
+                    if(selecionado < (n_campos -1)){
+                        selecionado ++;
+                    }
+                    else{
+                        selecionado = 0;
+                    }
+                } // else if(ch == 66)
+            } // if(ch == 91)
+        } // if(ch == 27)
+
+        if(ch == 10){   // ENTER
+            if(modo_edicao == 0) modo_edicao = 1;
+            else modo_edicao = 0; 
+            printf("%d\n", selecionado);
+            break;
+        }
+    }
+}   // simular_contracheque
