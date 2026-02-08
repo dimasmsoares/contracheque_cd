@@ -316,16 +316,25 @@ void simular_contracheque(InfosServidor *info_servidor){
                         {"1ª Graduação", "---"},
                         {"2ª Graduação", "---"}, 
                         {"1ª Especialização", "---"}, 
-                        {"2ª Especialização", "---"}};
-    int n_campos = 11;
+                        {"2ª Especialização", "---"},
+                        {"AVANÇAR", ""}};
+    int n_campos = 12;
 
     while(1){
         system("clear");
         printf("########## SIMULAR CONTRACHEQUE ##########\n");
-        printf("Verifique as informações abaixo.\nPara editar, selecione o campo e tecle ENTER.\nUse as setas ↑ ↓\n");
+        
+        printf("Verifique as informações abaixo.\n\033[30;47mPara editar, selecione o campo e tecle ENTER.\nUse as setas ↑ ↓\033[0m\n");
 
         for(int i = 0; i < n_campos; i++){
-            if (selecionado == i) printf(" ✏️  \033[31m%s:\033[0m %s\n", campos[i][0], campos[i][1]);
+            if (selecionado == i ){ 
+                if(modo_edicao == 0){
+                    printf(" \033[31m%s:\033[0m %s\n", campos[i][0], campos[i][1]);
+                }
+                else{
+                    printf(" ✏️  \033[31m%s:\033[0m \033[30;47m%s\033[0m\n", campos[i][0], campos[i][1]);
+                }
+            }
             else printf("    %s: %s\n", campos[i][0], campos[i][1]);
         }
 
@@ -357,8 +366,7 @@ void simular_contracheque(InfosServidor *info_servidor){
         if(ch == 10){   // ENTER
             if(modo_edicao == 0) modo_edicao = 1;
             else modo_edicao = 0; 
-            printf("%d\n", selecionado);
-            break;
+            if(selecionado == 11) break;
         }
     }
 }   // simular_contracheque
